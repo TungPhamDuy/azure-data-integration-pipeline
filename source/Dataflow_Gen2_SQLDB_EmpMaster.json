@@ -1,0 +1,52 @@
+{
+    "name": "Dataflow_Gen2_SQLDB_EmpMaster",
+    "properties": {
+        "type": "MappingDataFlow",
+        "typeProperties": {
+            "sources": [
+                {
+                    "dataset": {
+                        "referenceName": "Gen2_EmpMaster",
+                        "type": "DatasetReference"
+                    },
+                    "name": "Gen2EmpMaster"
+                }
+            ],
+            "sinks": [
+                {
+                    "dataset": {
+                        "referenceName": "SQLDB_NYC_Payroll_EMP_MD",
+                        "type": "DatasetReference"
+                    },
+                    "name": "SQLDBEmpMaster"
+                }
+            ],
+            "transformations": [],
+            "scriptLines": [
+                "source(output(",
+                "          EmployeeID as string,",
+                "          LastName as string,",
+                "          FirstName as string",
+                "     ),",
+                "     allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     ignoreNoFilesFound: false) ~> Gen2EmpMaster",
+                "Gen2EmpMaster sink(allowSchemaDrift: true,",
+                "     validateSchema: false,",
+                "     input(",
+                "          EmployeeID as string,",
+                "          LastName as string,",
+                "          FirstName as string",
+                "     ),",
+                "     deletable:false,",
+                "     insertable:true,",
+                "     updateable:false,",
+                "     upsertable:false,",
+                "     format: 'table',",
+                "     skipDuplicateMapInputs: true,",
+                "     skipDuplicateMapOutputs: true,",
+                "     errorHandlingOption: 'stopOnFirstError') ~> SQLDBEmpMaster"
+            ]
+        }
+    }
+}
